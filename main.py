@@ -3,13 +3,12 @@ from PIL import ImageTk, Image
 from os import startfile
 from datetime import datetime
 from re import sub
-import qrcode
+from pylibdmtx.pylibdmtx import encode as encode_dm
 
 
 class App:
 
     def __init__(self):
-
         def control_input_enter(event):
             self.txt_code.delete(END)
             print(self.txt_code.get('1.0', END))
@@ -87,7 +86,7 @@ class App:
         self.txt_code.insert(1.0, barcode)
 
     def data_matrix(self):
-        self.name_image = generate_code(self.txt_code.get('1.0', END))
+        self.name_image = generate_datamatrix(self.txt_code.get('1.0', END))
         self.lbl.configure(text="DataMatrix")
         canvas = Canvas(self.window, height=600, width=600)
         self.image = Image.open(self.name_image)
@@ -102,16 +101,9 @@ class App:
         startfile(self.name_image, "print")
 
 
-def generate_code(code):
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
-        border=4,
-    )
-    qr.add_data(code)
-    qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
+def generate_datamatrix(code):
+    encoded = encode_dm(bytes(code.encode()))
+    img = Image.frombytes('RGB', (encoded.width, encoded.height), encoded.pixels)
     time = datetime.now()
     time = sub('\W+', '', str(time))[0:15]
     name_image = f"DataMatrix_{time}.png"
