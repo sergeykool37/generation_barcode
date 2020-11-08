@@ -23,9 +23,41 @@ class App:
             if event.keycode == 67 and ctrl and event.keysym.lower() != "c":
                 event.widget.event_generate("<<Copy>>")
 
+        def control_input_russian_char_txt_code(event):
+            if event.keysym=="??":
+                text=self.txt_code.get('1.0', END)
+                text=text[:-2]
+                self.txt_code.delete('1.0',END)
+                self.txt_code.insert('1.0',text)
+            return 'break'
+
+        def control_input_russian_char_gtin(event):
+            if event.keysym=="??":
+                text=self.txt_gtin.get()
+                text=text[:-1]
+                self.txt_gtin.delete(0,END)
+                self.txt_gtin.insert(0,text)
+            return 'break'
+
+        def control_input_russian_char_sn(event):
+            if event.keysym == "??":
+                text = self.txt_sn.get()
+                text = text[:-1]
+                self.txt_sn.delete(0, END)
+                self.txt_sn.insert(0, text)
+            return 'break'
+
+        def control_input_russian_char_gt_sn(event):
+            if event.keysym == "??":
+                text = self.txt_gt_sn.get()
+                text = text[:-1]
+                self.txt_gt_sn.delete(0, END)
+                self.txt_gt_sn.insert(0, text)
+            return 'break'
+
+
         def control_input_enter(event):
             self.txt_code.delete(END)
-            print(self.txt_code.get('1.0', END))
             return 'break'
 
         def control_input_space(event):
@@ -91,6 +123,7 @@ class App:
         self.txt_gtin = Entry(self.window, width=20, font=("Arial Bold", 8), )
         self.txt_gtin.place(x=80 + x0, y=10 + y0)
         self.txt_gtin.focus()
+        self.txt_gtin.bind('<KeyRelease>', control_input_russian_char_gtin)
         self.txt_gtin.bind('<space>', control_input_space)
 
         self.lbl = Label(self.window, text="SN", font=("Arial Bold", 10))
@@ -98,6 +131,7 @@ class App:
         self.txt_sn = Entry(width=20, font=("Arial Bold", 8))
 
         self.txt_sn.place(x=80 + x0, y=40 + y0)
+        self.txt_sn.bind('<KeyRelease>', control_input_russian_char_sn)
         self.txt_sn.bind('<space>', control_input_space)
 
         self.lbl = Label(self.window, text="GTIN\SN", font=("Arial Bold", 10))
@@ -106,6 +140,7 @@ class App:
         self.txt_gt_sn.event_add('<<Paste>>',
                                  '<Control-igrave>')  # копипаст не зависимо какая стоит раскладка и какой копируется язык
         self.txt_gt_sn.place(x=80 + x0, y=65 + y0)
+        self.txt_gt_sn.bind('<KeyRelease>', control_input_russian_char_gt_sn)
         self.txt_gt_sn.bind('<space>', control_input_space)
         self.txt_gt_sn.config(state=DISABLED)
 
@@ -115,6 +150,7 @@ class App:
         self.txt_code.event_add('<<Paste>>',
                                 '<Control-igrave>')  # копипаст не зависимо какая стоит раскладка и какой копируется язык
         self.txt_code.place(x=80 + x0, y=100 + y0)
+        self.txt_code.bind('<KeyRelease>',control_input_russian_char_txt_code)
         self.txt_code.bind("<Tab>", focus_next_window)
         self.txt_code.bind('<Return>', control_input_enter)
         self.txt_code.bind('<space>', control_input_space)
